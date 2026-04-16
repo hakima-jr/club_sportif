@@ -1,0 +1,130 @@
+.stripe-body {
+  background-color: #f6f9fc;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.stripe-body .payment-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.stripe-body .payment-card {
+  background: white;
+  width: 100%;
+  max-width: 620px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+}
+
+.stripe-body .payment-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+}
+
+.stripe-body .payment-form input,
+.stripe-body .payment-form select {
+  width: 100% !important;
+  padding: 12px;
+  border: 1px solid #e6ebf1;
+  border-radius: 8px;
+  background-color: white !important;
+  color: #333 !important;
+  box-sizing: border-box !important;
+}
+
+.stripe-body .row-payment {
+  display: flex !important;
+  gap: 10px;
+}
+
+.stripe-body .row-payment input {
+  flex: 1 !important;
+  width: 50% !important;
+}
+
+.stripe-body .card-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.stripe-body .small-logos {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.stripe-body .small-logos img {
+  height: 18px;
+}
+
+.stripe-body .pay-btn {
+  background-color: #f39703 !important;
+  color: white !important;
+  border: none;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.stripe-body .separator {
+  text-align: center;
+  color: #aab7c4;
+  margin: 15px 0;
+  font-size: 12px;
+}
+/* Success & Error Styles */
+.status-container {
+  text-align: center;
+  padding: 20px 0;
+  animation: fadeIn 0.4s ease-in;
+}
+
+.status-container h2 {
+  margin: 15px 0 10px;
+  color: #333;
+}
+
+.status-container p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+  margin: 0 auto;
+}
+
+.success .icon-circle {
+  background-color: #2ecc71;
+}
+
+.error .icon-circle {
+  background-color: #e74c3c;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
