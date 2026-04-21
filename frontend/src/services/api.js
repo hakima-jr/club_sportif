@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:4000/api',  // ← ton backend doit tourner sur ce port
+  baseURL: 'http://localhost:5000/api',  // ← ton backend doit tourner sur ce port
   headers: {
     'Content-Type': 'application/json',
   },
@@ -32,3 +32,4 @@ export const getRapports = () => API.get('/rapports');
 
 
 export default API; 
+export const getMemberById = (id) => API.get('/membres/' + id);

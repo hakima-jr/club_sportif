@@ -41,8 +41,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src
     stdin_open: true
     tty: true
     depends_on:

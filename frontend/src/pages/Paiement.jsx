@@ -27,7 +27,7 @@ function Paiement() {
       date_paiement: dateNow,
       mode_paiement: "Carte",
       statut: "Payé",
-      id_abonnement: 1
+      id_abonnement: 2
     })
       .then((res) => {
         // عوض alert، غادين نطلعو صفحة النجاح

@@ -46,7 +46,7 @@ function Rapports() {
               <h5 className="mb-0">Membres totaux</h5>
             </div>
             <div className="card-body">
-              <h3 className="display-5">{stats.total_membres}</h3>
+              <h3 className="display-4 fw-bold">{parseFloat(stats.revenus_totaux || 0).toFixed(2)} DH</h3>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@ function Rapports() {
               <h5 className="mb-0">Séances programmées</h5>
             </div>
             <div className="card-body">
-              <h3 className="display-5">{stats.total_seances}</h3>
+              <h3 className="display-4 fw-bold">{parseFloat(stats.total_seances || 0).toFixed(2)} séances</h3>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@ function Rapports() {
               <h5 className="mb-0">Revenus totaux</h5>
             </div>
             <div className="card-body">
-              <h3 className="display-4 fw-bold">{stats.revenus_totaux.toFixed(2)} DH</h3>
+              <h3 className="display-4 fw-bold">{parseFloat(stats.revenus_totaux || 0).toFixed(2)} DH</h3>
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@ function Rapports() {
               <h5 className="mb-0">Paiements en attente</h5>
             </div>
             <div className="card-body">
-              <h3 className="display-4 fw-bold">{stats.paiements_en_attente.toFixed(2)} DH</h3>
+              <h3 className="display-4 fw-bold">{parseFloat(stats.paiements_en_attente || 0).toFixed(2)} DH</h3>
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@ function Rapports() {
               <h5 className="mb-0">Taux de présence moyen</h5>
             </div>
             <div className="card-body">
-              <h3 className="display-4 fw-bold">{stats.taux_presence_moyen}%</h3>
+              <h3 className="display-4 fw-bold">{parseFloat(stats.taux_presence_moyen || 0)}%</h3>
             </div>
           </div>
         </div>

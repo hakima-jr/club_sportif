@@ -38,3 +38,49 @@ CREATE TABLE IF NOT EXISTS paiement (
   statut VARCHAR(50),
   id_abonnement INT
 );
+CREATE TABLE IF NOT EXISTS info_personne (
+  id_personne INT AUTO_INCREMENT PRIMARY KEY,
+  nom VARCHAR(100),
+  prenom VARCHAR(100),
+  age INT,
+  adresse VARCHAR(200),
+  telephone VARCHAR(20),
+  email VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS Membre (
+  id_membre INT PRIMARY KEY,
+  date_inscription DATE,
+  type_membre VARCHAR(50),
+  FOREIGN KEY (id_membre) REFERENCES info_personne(id_personne)
+);
+
+CREATE TABLE IF NOT EXISTS Abonnement (
+  id_abonnement INT AUTO_INCREMENT PRIMARY KEY,
+  type VARCHAR(50),
+  date_debut DATE,
+  date_fin DATE,
+  prix DECIMAL(10,2),
+  id_membre INT,
+  FOREIGN KEY (id_membre) REFERENCES Membre(id_membre)
+);
+
+CREATE TABLE IF NOT EXISTS Paiement (
+  id_paiement INT AUTO_INCREMENT PRIMARY KEY,
+  montant DECIMAL(10,2),
+  date_paiement DATE,
+  mode_paiement VARCHAR(50),
+  statut VARCHAR(50),
+  id_abonnement INT,
+  FOREIGN KEY (id_abonnement) REFERENCES Abonnement(id_abonnement)
+);
+
+CREATE TABLE IF NOT EXISTS Inscription (
+  id_inscription INT AUTO_INCREMENT PRIMARY KEY,
+  date_inscription DATE,
+  statut VARCHAR(50),
+  id_membre INT,
+  id_seance INT,
+  FOREIGN KEY (id_membre) REFERENCES Membre(id_membre),
+  FOREIGN KEY (id_seance) REFERENCES seances(id_seance)
+);

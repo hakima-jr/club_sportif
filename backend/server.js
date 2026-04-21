@@ -182,9 +182,9 @@ app.get('/api/seances', async (req, res) => {
         s.capacite,
         COALESCE(sp.nom_sport, 'غير محدد') AS nom_sport,
         COALESCE(CONCAT(p.nom, ' ', p.prenom), 'مدرب غير معروف') AS nom_coach
-      FROM Seance s
-      LEFT JOIN Sport sp ON s.id_sport = sp.id_sport
-      LEFT JOIN Coach c ON s.id_coach = c.id_coach
+      FROM seances s
+      LEFT JOIN sports sp ON s.id_sport = sp.id_sport
+      LEFT JOIN coach c ON s.id_coach = c.id_coach
       LEFT JOIN info_personne p ON c.id_coach = p.id_personne
       ORDER BY s.date DESC
     `);
@@ -208,7 +208,7 @@ app.post('/api/seances', async (req, res) => {
 
   try {
     const [result] = await db.query(
-      'INSERT INTO Seance (date, heure, capacite, id_sport, id_coach) VALUES (?, ?, ?, ?, ?)',
+      'INSERT INTO seances (date, heure, capacite, id_sport, id_coach) VALUES (?, ?, ?, ?, ?)',
       [date, heure, Number(capacite), Number(id_sport), Number(id_coach)]
     );
 
@@ -334,7 +334,7 @@ app.get('/api/rapports', async (req, res) => {
     stats.paiements_en_attente = enAttente[0].total;
 
     // 5. Nombre total de séances
-    const [seances] = await db.query('SELECT COUNT(*) AS total FROM Seance');
+    const [seances] = await db.query('SELECT COUNT(*) AS total FROM seances');
     stats.total_seances = seances[0].total;
 
     // 6. Taux de présence moyen (approximatif : % de présents / inscrits)
@@ -357,6 +357,78 @@ app.get('/api/rapports', async (req, res) => {
   }
 });
 
+// Routes Sports
+app.get('/api/sports', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM sports');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur chargement sports' });
+  }
+});
+
+app.post('/api/sports', async (req, res) => {
+  const { nom_sport, categorie } = req.body;
+  try {
+    const [result] = await db.query(
+      'INSERT INTO sports (nom_sport, categorie) VALUES (?, ?)',
+      [nom_sport, categorie]
+    );
+    res.status(201).json({ id_sport: result.insertId, nom_sport, categorie });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur ajout sport' });
+  }
+});
+
+app.put('/api/sports/:id', async (req, res) => {
+  const { nom_sport, categorie } = req.body;
+  try {
+    await db.query(
+      'UPDATE sports SET nom_sport=?, categorie=? WHERE id_sport=?',
+      [nom_sport, categorie, req.params.id]
+    );
+    res.json({ message: 'Sport modifié' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur modification sport' });
+  }
+});
+
+app.delete('/api/sports/:id', async (req, res) => {
+  try {
+    await db.query('DELETE FROM sports WHERE id_sport=?', [req.params.id]);
+    res.json({ message: 'Sport supprimé' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur suppression sport' });
+  }
+});
+
+// Route membres-simple
+app.get('/api/membres-simple', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT id_personne, nom, prenom FROM info_personne JOIN Membre ON id_personne = id_membre');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur chargement membres' });
+  }
+});
+
+
+// GET membre by ID
+app.get('/api/membres/:id', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT p.id_personne, p.nom, p.prenom, p.age, p.adresse, 
+             p.telephone, p.email, m.date_inscription, m.type_membre
+      FROM info_personne p
+      INNER JOIN Membre m ON p.id_personne = m.id_membre
+      WHERE p.id_personne = ?
+    `, [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Membre non trouvé' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
 // ─────────────────────────────────────────────────────────────
 // Lancement du serveur
 // ─────────────────────────────────────────────────────────────

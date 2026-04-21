@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMembers } from '../services/api';
 import AddMember from '../components/AddMember';
+import { Link } from 'react-router-dom';
 
 function Members() {
   const [members, setMembers] = useState([]);
@@ -52,6 +53,7 @@ function Members() {
                 <th>Adresse</th>            {/* ← Nouvelle colonne */}
                 <th>Date d'inscription</th>
                 <th>Type de membre</th>
+                <th>Profil</th>
               </tr>
             </thead>
             <tbody>
@@ -65,6 +67,13 @@ function Members() {
                   <td>{member.adresse || '-'}</td>         {/* ← Ajouté */}
                   <td>{member.date_inscription}</td>
                   <td>{member.type_membre}</td>
+                  <td>
+                     <Link to={`/profil/${member.id_personne}`} 
+                     style={{color:'#4f6ef7', fontWeight:'600'}}>
+                     👤 Voir profil
+                     </Link>
+                  </td>
+            
                 </tr>
               ))}
             </tbody>
