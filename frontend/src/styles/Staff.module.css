@@ -1,0 +1,372 @@
+.staff-page {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  min-height: 100vh;
+}
+
+.staff-container {
+  padding: 20px;
+}
+
+.staff-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.add-btn {
+  background: #3b82f6;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+.search-box {
+  display: flex;
+  background: #1f2937;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+}
+
+/* TABLE */
+.table-container {
+  background: #1f2937;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  padding: 10px;
+}
+
+tr:hover {
+  background: #374151;
+}
+
+/* ACTIONS */
+.actions button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* AVATAR */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.preview {
+  width: 60px;
+  border-radius: 10px;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: #111827;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+}
+
+.box input, .box select {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+.save-btn {
+  background: green;
+  color: white;
+  padding: 10px;
+  border: none;
+}
+table {
+  width: 100%;
+  color: white;
+}
+
+th, td {
+  padding: 10px;
+  color: white;
+}
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* dlam l-background chwiya */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalBox {
+    background: #1a1a2e; /* lawn d l-box daxel (dark blue/black) */
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    color: white; /* Force l-ktiba tkon bida */
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modalHeader h3 {
+    color: #ffffff !important; /* Force title white */
+}
+
+.formGroup input, .formGroup select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #252545; /* lawn l-input */
+    border: 1px solid #3f3f6b;
+    border-radius: 6px;
+    color: white !important; /* Force input text white */
+}
+
+/* Bach l-placeholder maykounch k7al */
+.formGroup input::placeholder {
+    color: #a0a0a0;
+}
+
+.saveBtn {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+/* CONTAINER GENERAL */
+.container {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.addBtn {
+  background: #3b82f6;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+.addBtn:hover {
+  background: #2563eb;
+}
+
+/* SEARCH */
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: #1f2937;
+  padding: 8px 15px;
+  border-radius: 10px;
+  gap: 10px;
+}
+
+.searchBox input {
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+}
+
+/* TABLE */
+.tableContainer {
+  background: #1f2937;
+  border-radius: 12px;
+  padding: 15px;
+  overflow-x: auto;
+}
+
+.tableContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+}
+
+.tableContainer th {
+  text-align: left;
+  border-bottom: 1px solid #374151;
+  padding: 12px;
+  color: #9ca3af;
+}
+
+.tableContainer td {
+  padding: 12px;
+  border-bottom: 1px solid #1f2937;
+  color: white;
+}
+
+.tableContainer tr:hover {
+  background: #374151;
+}
+
+/* AVATAR & PREVIEW */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  margin: 10px auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* ACTIONS */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.actions button:hover {
+  color: white;
+}
+
+/* MODAL / FORM */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalBox {
+  background: #1a1a2e;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  color: white !important;
+}
+
+.closeIcon {
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+/* INPUTS DANS MODAL */
+.modalBox input, 
+.modalBox select {
+  width: 100%;
+  padding: 12px;
+  background: #252545;
+  border: 1px solid #3f3f6b;
+  border-radius: 8px;
+  color: white !important;
+  outline: none;
+}
+
+.modalBox input::placeholder {
+  color: #a0a0a0;
+}
+
+.fileInput {
+  font-size: 0.8rem;
+  background: transparent !important;
+  border: 1px dashed #3f3f6b !important;
+}
+
+.saveBtn {
+  background: #3b82f6;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.saveBtn:hover {
+  background: #2563eb;
+}

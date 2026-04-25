@@ -1,8 +1,9 @@
-body {
+.coach-page {
   margin: 0;
   font-family: Arial;
-  background: #0f172a;
+  background: #131825;
   color: white;
+  min-height: 100vh;
 }
 
 /* APP */

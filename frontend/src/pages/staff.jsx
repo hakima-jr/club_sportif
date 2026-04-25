@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/staff.css";
+ import styles from"../styles/Staff.module.css"; 
 import { Search, Plus, Trash2, Edit, Calendar, X } from "lucide-react";
 
 const initialStaff = [
@@ -66,22 +66,22 @@ function Staff() {
   };
 
   return (
-    <div className="staff-container">
+    <div className={styles.container}>
 
       {/* TOP */}
-      <div className="staff-top">
-        <button className="add-btn" onClick={() => setShowForm(true)}>
+      <div className={styles["staff-top"]}>
+        <button className={styles["add-btn"]} onClick={() => setShowForm(true)}>
           <Plus size={16}/> Nouveau Staff
         </button>
 
-        <div className="search-box">
+        <div className={styles["search-box"]}>
           <Search size={16}/>
           <input placeholder="Rechercher..." onChange={(e)=>setSearch(e.target.value)}/>
         </div>
       </div>
 
       {/* TABLE */}
-      <div className="table-container">
+      <div className={styles["table-container"]}>
         <table>
           <thead>
             <tr>
@@ -100,7 +100,7 @@ function Staff() {
             {filtered.map(s => (
               <tr key={s.id}>
                 <td>
-                  {s.image ? <img src={s.image} alt="" className="avatar"/> : "—"}
+                  {s.image ? <img src={s.image} alt="" className={styles.avatar}/> : "—"}
                 </td>
                 <td>{s.nom}</td>
                 <td>{s.prenom}</td>
@@ -109,7 +109,7 @@ function Staff() {
                 <td>{s.email}</td>
                 <td>{s.sexe}</td>
 
-                <td className="actions">
+                <td className={styles.actions}>
                   <button onClick={() => openEdit(s)}><Edit size={16}/></button>
                   <button onClick={() => deleteStaff(s.id)}><Trash2 size={16}/></button>
                   <button><Calendar size={16}/></button>
@@ -122,9 +122,9 @@ function Staff() {
 
       {/* MODAL */}
       {showForm && (
-        <div className="modal">
-          <div className="box">
-            <div className="modal-header">
+        <div className={styles.modal}>
+          <div className={styles.box}>
+            <div className={styles["modal-header"]}>
               <h3>{editMode ? "Modifier" : "Ajouter"} Staff</h3>
               <X onClick={resetForm}/>
             </div>
@@ -143,9 +143,9 @@ function Staff() {
 
             <input type="file" onChange={handleImage}/>
 
-            {form.image && <img src={form.image} className="preview" alt="preview"/>}
+            {form.image && <img src={form.image} className={styles.preview} alt="preview"/>}
 
-            <button className="save-btn" onClick={editMode ? updateStaff : addStaff}>
+            <button className={styles["save-btn"]} onClick={editMode ? updateStaff : addStaff}>
               {editMode ? "Modifier" : "Ajouter"}
             </button>
           </div>
