@@ -19,8 +19,11 @@ const Navbar = () => {
     <Link to="/members" style={linkStyle}>Membres</Link>
     <Link to="/abonnements" style={linkStyle}>Abonnements</Link>
     <Link to="/presence" style={linkStyle}>Presence</Link>
-
     <Link to="/rapports" style={linkStyle}>Rapports</Link>
+    <Link to="/coach" style={linkStyle}>Coach</Link>
+    <Link to="/staff" style={linkStyle}>Staff</Link>
+    <Link to="/club" style={linkStyle}>Club</Link>
+    
     
  </nav>
 );

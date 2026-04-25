@@ -1,38 +1,29 @@
+/* src/App.css */
+
+/* Force white text for everything inside the app except modules */
 .App {
-  text-align: center;
+  color: white !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Hadchi ghadi i-soweb l-ktiba d l-Bootstrap (Tables, Cards, Forms) */
+.App h1, .App h2, .App h3, .App h4, .App h5, .App h6, 
+.App p, .App span, .App label, .App div, .App td, .App th {
+  color: white; 
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Ila kano les tableaux dyal Presence/Rapports b Bootstrap */
+.table {
+  color: white !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.table thead th {
+  color: white !important;
+  border-bottom: 1px solid #444;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* L-Input d Bootstrap bach may-b9ach dlam */
+.form-control {
+  background-color: #2d3748 !important;
+  color: white !important;
+  border: 1px solid #4a5568 !important;
 }
