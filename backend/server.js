@@ -27,36 +27,42 @@ app.get('/', (req, res) => {
 
 // Liste tous les membres
 app.get('/api/membres', async (req, res) => {
-    try {
-        const [rows] = await db.query(`
-            SELECT 
-                p.id_personne, p.nom, p.prenom, p.age, p.adresse, 
-                p.telephone, p.email, m.date_inscription, m.type_membre
-            FROM info_personne p
-            INNER JOIN Membre m ON p.id_personne = m.id_membre
-        `);
-        res.json(rows);
-    } catch (error) {
-        console.error('Erreur liste membres:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        p.id_personne,
+        p.nom,
+        p.prenom,
+        p.date_naissance,           -- nouvelle colonne
+        p.email,
+        p.telephone,
+        p.adresse,
+        m.date_inscription
+      FROM info_personne p
+      INNER JOIN Membre m ON p.id_personne = m.id_membre
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('Erreur GET /api/membres:', err.message);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
 
 // Ajouter un nouveau membre
 app.post('/api/membres', async (req, res) => {
-    const { nom, prenom, age, adresse, telephone, email, date_inscription, type_membre } = req.body;
+    const { nom, prenom, date_naissance, adresse, telephone, email, date_inscription } = req.body;
 
     try {
         const [personResult] = await db.query(
-            'INSERT INTO info_personne (nom, prenom, age, adresse, telephone, email) VALUES (?, ?, ?, ?, ?, ?)',
-            [nom, prenom, age, adresse, telephone, email]
+            'INSERT INTO info_personne (nom, prenom, date_naissance, adresse, telephone, email) VALUES (?, ?, ?, ?, ?, ?)',
+            [nom, prenom, date_naissance, adresse, telephone, email]
         );
 
         const id = personResult.insertId;
 
         await db.query(
-            'INSERT INTO Membre (id_membre, date_inscription, type_membre) VALUES (?, ?, ?)',
-            [id, date_inscription, type_membre]
+            'INSERT INTO Membre (id_membre, date_inscription) VALUES (?, ?)',
+            [id, date_inscription]
         );
 
         res.status(201).json({ message: 'Membre ajouté', id_membre: id });
@@ -69,12 +75,12 @@ app.post('/api/membres', async (req, res) => {
 // Modifier un membre (exemple simple - à compléter selon besoins)
 app.put('/api/membres/:id', async (req, res) => {
     const { id } = req.params;
-    const { nom, prenom, age, adresse, telephone, email } = req.body;
+    const { nom, prenom, date_naissance, adresse, telephone, email } = req.body;
 
     try {
         await db.query(
-            'UPDATE info_personne SET nom=?, prenom=?, age=?, adresse=?, telephone=?, email=? WHERE id_personne=?',
-            [nom, prenom, age, adresse, telephone, email, id]
+            'UPDATE info_personne SET nom=?, prenom=?, date_naissance=?, adresse=?, telephone=?, email=? WHERE id_personne=?',
+            [nom, prenom, date_naissance, adresse, telephone, email, id]
         );
         res.json({ message: 'Membre modifié' });
     } catch (error) {
@@ -86,29 +92,66 @@ app.put('/api/membres/:id', async (req, res) => {
 // 2. Gestion des abonnements
 // ─────────────────────────────────────────────────────────────
 
+// GET : Liste des abonnements
 app.get('/api/abonnements', async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT * FROM Abonnement');
-        res.json(rows);
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur liste abonnements' });
-    }
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        a.id_abonnement,
+        a.type,
+        a.date_debut,
+        a.date_fin,
+        a.prix,
+        a.id_membre,
+        CONCAT(m.nom, ' ', m.prenom) AS nom_membre
+      FROM Abonnement a
+      LEFT JOIN Membre mem ON a.id_membre = mem.id_membre
+      LEFT JOIN info_personne m ON mem.id_membre = m.id_personne
+      ORDER BY a.date_debut DESC
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('Erreur GET /api/abonnements :', err.message);
+    res.status(500).json({ error: 'Erreur chargement abonnements' });
+  }
 });
 
+// POST : Ajouter un abonnement (نسخة محسنة وأكثر أماناً)
 app.post('/api/abonnements', async (req, res) => {
-    const { type, date_debut, date_fin, prix, id_membre } = req.body;
-    try {
-        const [result] = await db.query(
-            'INSERT INTO Abonnement (type, date_debut, date_fin, prix, id_membre) VALUES (?, ?, ?, ?, ?)',
-            [type, date_debut, date_fin, prix, id_membre]
-        );
-        res.status(201).json({ message: 'Abonnement créé', id: result.insertId });
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur création abonnement' });
-    }
+  const { type, date_debut, date_fin, prix, id_membre } = req.body;
+
+  console.log("📥 Données reçues :", req.body);
+
+  // Validation
+  if (!type || !date_debut || !date_fin || !prix || !id_membre) {
+    return res.status(400).json({ error: "Tous les champs sont obligatoires" });
+  }
+
+  try {
+    const [result] = await db.query(
+      'INSERT INTO Abonnement (type, date_debut, date_fin, prix, id_membre) VALUES (?, ?, ?, ?, ?)',
+      [type, date_debut, date_fin, parseFloat(prix), parseInt(id_membre)]
+    );
+
+    console.log("✅ Abonnement ajouté avec succès - ID :", result.insertId);
+
+    res.status(201).json({ 
+      message: "Abonnement ajouté avec succès",
+      id: result.insertId 
+    });
+
+  } catch (err) {
+    console.error("❌ Erreur POST /api/abonnements :", err.message);
+    console.error("Stack complet :", err.stack);
+
+    res.status(500).json({ 
+      error: "Erreur lors de l’ajout de l’abonnement",
+      details: err.message
+    });
+  }
 });
 
-// GET : Liste des paiements avec infos membre + abonnement
+// GET : Liste des paiements
 app.get('/api/paiements', async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -118,10 +161,8 @@ app.get('/api/paiements', async (req, res) => {
         p.date_paiement,
         p.mode_paiement,
         p.statut,
-        p.id_abonnement,
         a.type AS type_abonnement,
-        CONCAT(m.nom, ' ', m.prenom) AS nom_membre,
-        m.id_personne AS id_membre
+        CONCAT(m.nom, ' ', m.prenom) AS nom_membre
       FROM Paiement p
       LEFT JOIN Abonnement a ON p.id_abonnement = a.id_abonnement
       LEFT JOIN Membre mem ON a.id_membre = mem.id_membre
@@ -131,7 +172,7 @@ app.get('/api/paiements', async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error('Erreur GET /api/paiements:', err.message);
-    res.status(500).json({ error: 'Erreur chargement paiements', details: err.message });
+    res.status(500).json({ error: 'Erreur chargement paiements' });
   }
 });
 
@@ -148,10 +189,10 @@ app.post('/api/paiements', async (req, res) => {
       'INSERT INTO Paiement (montant, date_paiement, mode_paiement, statut, id_abonnement) VALUES (?, ?, ?, ?, ?)',
       [montant, date_paiement, mode_paiement, statut, id_abonnement]
     );
-    res.status(201).json({ message: 'Paiement ajouté', id: result.insertId });
+    res.status(201).json({ message: 'Paiement ajouté avec succès', id: result.insertId });
   } catch (err) {
     console.error('Erreur POST /api/paiements:', err.message);
-    res.status(500).json({ error: 'Erreur ajout paiement', details: err.message });
+    res.status(500).json({ error: 'Erreur ajout paiement' });
   }
 });
 
@@ -170,6 +211,27 @@ app.put('/api/paiements/:id', async (req, res) => {
   }
 });
 
+// GET : Abonnements d'un membre spécifique
+app.get('/api/abonnements-par-membre/:id_membre', async (req, res) => {
+  const { id_membre } = req.params;
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        a.id_abonnement,
+        a.type,
+        a.date_debut,
+        a.date_fin,
+        a.prix
+      FROM Abonnement a
+      WHERE a.id_membre = ?
+      ORDER BY a.date_fin DESC
+    `, [id_membre]);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erreur chargement abonnements' });
+  }
+});
 
 // GET toutes les séances
 app.get('/api/seances', async (req, res) => {
@@ -357,78 +419,131 @@ app.get('/api/rapports', async (req, res) => {
   }
 });
 
-// Routes Sports
-app.get('/api/sports', async (req, res) => {
+
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = "club_sportif_secret_2025";   // غيريها لكلمة سر أقوى في الإنتاج
+
+// Login متعدد الأدوار (النسخة الجديدة والمحسنة)
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const [rows] = await db.query('SELECT * FROM sports');
-    res.json(rows);
+    const [users] = await db.query(
+      `SELECT id_utilisateur, nom, prenom, email, role 
+       FROM Utilisateur 
+       WHERE email = ? AND password = ? AND actif = true`,
+      [email, password]
+    );
+
+    if (users.length === 0) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Email ou mot de passe incorrect" 
+      });
+    }
+
+    const user = users[0];
+
+    const token = jwt.sign(
+      { 
+        id: user.id_utilisateur, 
+        email: user.email, 
+        role: user.role,
+        nom: user.nom,
+        prenom: user.prenom 
+      },
+      SECRET_KEY,
+      { expiresIn: "7d" }
+    );
+
+    res.json({ 
+      success: true, 
+      token,
+      role: user.role,
+      user: {
+        nom: user.nom,
+        prenom: user.prenom,
+        email: user.email,
+        role: user.role
+      },
+      message: "Connexion réussie"
+    });
+
   } catch (err) {
-    res.status(500).json({ error: 'Erreur chargement sports' });
+    console.error("Erreur login:", err.message);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erreur serveur" 
+    });
   }
 });
 
-app.post('/api/sports', async (req, res) => {
-  const { nom_sport, categorie } = req.body;
+// ====================== REGISTER - Créer un nouveau compte ======================
+app.post('/api/register', async (req, res) => {
+  const { nom, prenom, email, password, role } = req.body;
+
+  // Validation
+  if (!nom || !prenom || !email || !password || !role) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "Tous les champs sont obligatoires" 
+    });
+  }
+
   try {
+    // التحقق إذا كان الإيميل موجود مسبقاً
+    const [existing] = await db.query(
+      'SELECT id_utilisateur FROM Utilisateur WHERE email = ?', 
+      [email]
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Cet email est déjà utilisé" 
+      });
+    }
+
+    // إنشاء الحساب الجديد
     const [result] = await db.query(
-      'INSERT INTO sports (nom_sport, categorie) VALUES (?, ?)',
-      [nom_sport, categorie]
+      'INSERT INTO Utilisateur (nom, prenom, email, password, role) VALUES (?, ?, ?, ?, ?)',
+      [nom, prenom, email, password, role]
     );
-    res.status(201).json({ id_sport: result.insertId, nom_sport, categorie });
-  } catch (err) {
-    res.status(500).json({ error: 'Erreur ajout sport' });
-  }
-});
 
-app.put('/api/sports/:id', async (req, res) => {
-  const { nom_sport, categorie } = req.body;
-  try {
-    await db.query(
-      'UPDATE sports SET nom_sport=?, categorie=? WHERE id_sport=?',
-      [nom_sport, categorie, req.params.id]
-    );
-    res.json({ message: 'Sport modifié' });
-  } catch (err) {
-    res.status(500).json({ error: 'Erreur modification sport' });
-  }
-});
+    console.log(`✅ Nouveau compte créé: ${email} - Role: ${role}`);
 
-app.delete('/api/sports/:id', async (req, res) => {
-  try {
-    await db.query('DELETE FROM sports WHERE id_sport=?', [req.params.id]);
-    res.json({ message: 'Sport supprimé' });
-  } catch (err) {
-    res.status(500).json({ error: 'Erreur suppression sport' });
-  }
-});
+    res.status(201).json({
+      success: true,
+      message: "Compte créé avec succès",
+      id: result.insertId
+    });
 
-// Route membres-simple
-app.get('/api/membres-simple', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT id_personne, nom, prenom FROM info_personne JOIN Membre ON id_personne = id_membre');
-    res.json(rows);
   } catch (err) {
-    res.status(500).json({ error: 'Erreur chargement membres' });
+    console.error("Erreur register:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Erreur lors de la création du compte"
+    });
   }
 });
 
 
-// GET membre by ID
-app.get('/api/membres/:id', async (req, res) => {
-  try {
-    const [rows] = await db.query(`
-      SELECT p.id_personne, p.nom, p.prenom, p.age, p.adresse, 
-             p.telephone, p.email, m.date_inscription, m.type_membre
-      FROM info_personne p
-      INNER JOIN Membre m ON p.id_personne = m.id_membre
-      WHERE p.id_personne = ?
-    `, [req.params.id]);
-    if (rows.length === 0) return res.status(404).json({ error: 'Membre non trouvé' });
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur' });
+// Middleware للتحقق من التوكن (لحماية الصفحات)
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "Accès refusé - Token manquant" });
   }
-});
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.status(403).json({ message: "Token invalide" });
+    req.user = user;
+    next();
+  });
+};
+
 // ─────────────────────────────────────────────────────────────
 // Lancement du serveur
 // ─────────────────────────────────────────────────────────────

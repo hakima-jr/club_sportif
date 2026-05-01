@@ -1,33 +1,47 @@
 // src/pages/Abonnements.jsx
 import React, { useState, useEffect } from 'react';
-import { getAbonnements, addAbonnement } from '../services/api'; // On va ajouter ces fonctions
+import { getAbonnements, addAbonnement, getMembers } from '../services/api';
 
 function Abonnements() {
+  const today = new Date().toISOString().split('T')[0];
+
   const [abonnements, setAbonnements] = useState([]);
+  const [membres, setMembres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
     type: '',
-    date_debut: '',
+    date_debut: today,
     date_fin: '',
     prix: '',
-    id_membre: '', // ID du membre (à sélectionner ou entrer)
+    id_membre: '',
   });
 
   const fetchAbonnements = async () => {
     try {
       const response = await getAbonnements();
       setAbonnements(response.data);
-      setLoading(false);
     } catch (err) {
       setError('Erreur lors du chargement des abonnements');
-      setLoading(false);
+    }
+  };
+
+  const fetchMembres = async () => {
+    try {
+      const response = await getMembers();
+      setMembres(response.data || []);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchAbonnements();
+    const loadData = async () => {
+      await Promise.all([fetchAbonnements(), fetchMembres()]);
+      setLoading(false);
+    };
+    loadData();
   }, []);
 
   const handleChange = (e) => {
@@ -42,11 +56,25 @@ function Abonnements() {
     try {
       await addAbonnement(formData);
       alert('Abonnement ajouté avec succès !');
-      setFormData({ type: '', date_debut: '', date_fin: '', prix: '', id_membre: '' });
-      fetchAbonnements(); // Recharger la liste
+      
+      setFormData({
+        type: '',
+        date_debut: today,
+        date_fin: '',
+        prix: '',
+        id_membre: '',
+      });
+      
+      fetchAbonnements();
     } catch (err) {
       alert('Erreur lors de l’ajout de l’abonnement');
     }
+  };
+
+  // تنسيق التاريخ (YYYY-MM-DD فقط)
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    return dateString.split('T')[0];
   };
 
   if (loading) return <div className="text-center mt-5">Chargement...</div>;
@@ -56,7 +84,7 @@ function Abonnements() {
     <div className="container mt-4">
       <h2 className="mb-4 text-center">Gestion des Abonnements</h2>
 
-      {/* Formulaire d’ajout */}
+      {/* Formulaire d'ajout */}
       <div className="card mb-4 shadow-sm">
         <div className="card-header bg-success text-white">
           <h5 className="mb-0">Ajouter un nouvel abonnement</h5>
@@ -66,78 +94,45 @@ function Abonnements() {
             <div className="row g-3">
               <div className="col-md-6">
                 <label className="form-label">Type d’abonnement</label>
-                <input
-                  type="text"
-                  name="type"
-                  className="form-control"
-                  placeholder="ex: Mensuel, Trimestriel, Annuel"
-                  value={formData.type}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="text" name="type" className="form-control" placeholder="Mensuel, Trimestriel, Annuel..." value={formData.type} onChange={handleChange} required />
               </div>
 
               <div className="col-md-3">
                 <label className="form-label">Date début</label>
-                <input
-                  type="date"
-                  name="date_debut"
-                  className="form-control"
-                  value={formData.date_debut}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="date" name="date_debut" className="form-control" value={formData.date_debut} min={today} onChange={handleChange} required />
               </div>
 
               <div className="col-md-3">
                 <label className="form-label">Date fin</label>
-                <input
-                  type="date"
-                  name="date_fin"
-                  className="form-control"
-                  value={formData.date_fin}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="date" name="date_fin" className="form-control" value={formData.date_fin} onChange={handleChange} required />
               </div>
 
               <div className="col-md-4">
                 <label className="form-label">Prix (DH)</label>
-                <input
-                  type="number"
-                  name="prix"
-                  className="form-control"
-                  step="0.01"
-                  value={formData.prix}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="number" name="prix" className="form-control" step="0.01" value={formData.prix} onChange={handleChange} required />
               </div>
 
               <div className="col-md-8">
-                <label className="form-label">ID du membre</label>
-                <input
-                  type="number"
-                  name="id_membre"
-                  className="form-control"
-                  placeholder="ID du membre concerné"
-                  value={formData.id_membre}
-                  onChange={handleChange}
-                  required
-                />
+                <label className="form-label">Membre</label>
+                <select name="id_membre" className="form-select" value={formData.id_membre} onChange={handleChange} required>
+                  <option value="">-- Choisir un membre --</option>
+                  {membres.map(m => (
+                    <option key={m.id_personne} value={m.id_personne}>
+                      {m.nom} {m.prenom}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
             <div className="mt-4 text-end">
-              <button type="submit" className="btn btn-success">
-                Enregistrer l’abonnement
-              </button>
+              <button type="submit" className="btn btn-success">Enregistrer l’abonnement</button>
             </div>
           </form>
         </div>
       </div>
 
-      {/* Liste des abonnements */}
+      {/* Liste des abonnements - مع الاسم + اللقب */}
       {abonnements.length === 0 ? (
         <div className="alert alert-info text-center">Aucun abonnement enregistré</div>
       ) : (
@@ -147,10 +142,10 @@ function Abonnements() {
               <tr>
                 <th>ID</th>
                 <th>Type</th>
-                <th>Début</th>
-                <th>Fin</th>
+                <th>Date début</th>
+                <th>Date fin</th>
                 <th>Prix (DH)</th>
-                <th>Membre (ID)</th>
+                <th>Membre</th>
               </tr>
             </thead>
             <tbody>
@@ -158,10 +153,12 @@ function Abonnements() {
                 <tr key={abo.id_abonnement}>
                   <td>{abo.id_abonnement}</td>
                   <td>{abo.type}</td>
-                  <td>{abo.date_debut}</td>
-                  <td>{abo.date_fin}</td>
+                  <td>{formatDate(abo.date_debut)}</td>
+                  <td>{formatDate(abo.date_fin)}</td>
                   <td>{abo.prix} DH</td>
-                  <td>{abo.id_membre}</td>
+                  <td>
+                    {abo.nom_membre || `Membre ID ${abo.id_membre}`}
+                  </td>
                 </tr>
               ))}
             </tbody>
