@@ -27,6 +27,7 @@ export const markPresence = (data) => API.post('/presence', data);
 export const getPaiements = () => API.get('/paiements');
 export const addPaiement = (data) => API.post('/paiements', data);
 export const markPaiementPaye = (id) => API.put(`/paiements/${id}`);
+export const getAbonnementsParMembre = (id_membre) => API.get(`/abonnements-par-membre/${id_membre}`);
 
 export const getRapports = () => API.get('/rapports');
 
