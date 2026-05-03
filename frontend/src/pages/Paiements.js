@@ -15,12 +15,16 @@ function Paiements() {
     montant: '',
     date_paiement: new Date().toISOString().split('T')[0],
     mode_paiement: 'Espèces',
-    statut: 'Payé',           // ← Statut موجود وواضح
+    statut: 'Payé',
     id_abonnement: '',
   });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // جلب معلومات المستخدم الحالي
+  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+  const isAdmin = user?.role === 'admin';
 
   // Charger les membres + paiements
   useEffect(() => {
@@ -56,7 +60,6 @@ function Paiements() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // عند اختيار اشتراك → يملأ المبلغ تلقائياً
   const handleAbonnementChange = (e) => {
     const idAbo = e.target.value;
     setFormData({ ...formData, id_abonnement: idAbo });
@@ -97,7 +100,7 @@ function Paiements() {
     }
   };
 
-  // Calcul des totaux
+  // Calcul des totaux (فقط للأدمن)
   const totalPaye = paiements
     .filter(p => p.statut === 'Payé')
     .reduce((sum, p) => sum + Number(p.montant), 0);
@@ -106,7 +109,6 @@ function Paiements() {
     .filter(p => p.statut === 'En attente')
     .reduce((sum, p) => sum + Number(p.montant), 0);
 
-  // Filtrage
   const filteredPaiements = paiements.filter(p => {
     const matchMembre = filterMembre ? p.nom_membre?.toLowerCase().includes(filterMembre.toLowerCase()) : true;
     const matchStatut = filterStatut ? p.statut === filterStatut : true;
@@ -117,25 +119,27 @@ function Paiements() {
     <div className="container mt-5">
       <h2 className="mb-4 text-center">Gestion des Paiements</h2>
 
-      {/* Totaux */}
-      <div className="row mb-4">
-        <div className="col-md-6">
-          <div className="card text-white bg-success">
-            <div className="card-body">
-              <h5>Total Payé</h5>
-              <h3>{totalPaye.toFixed(2)} DH</h3>
+      {/* Totaux - فقط للأدمن */}
+      {isAdmin && (
+        <div className="row mb-4">
+          <div className="col-md-6">
+            <div className="card text-white bg-success">
+              <div className="card-body">
+                <h5>Total Payé</h5>
+                <h3>{totalPaye.toFixed(2)} DH</h3>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card text-white bg-warning">
+              <div className="card-body">
+                <h5>Total En Attente</h5>
+                <h3>{totalEnAttente.toFixed(2)} DH</h3>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-md-6">
-          <div className="card text-white bg-warning">
-            <div className="card-body">
-              <h5>Total En Attente</h5>
-              <h3>{totalEnAttente.toFixed(2)} DH</h3>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Filtres */}
       <div className="row mb-4">
@@ -162,7 +166,7 @@ function Paiements() {
         </div>
       </div>
 
-      {/* Formulaire */}
+      {/* Formulaire d'enregistrement */}
       <div className="card mb-5 shadow">
         <div className="card-header bg-success text-white">
           <h5 className="mb-0">Enregistrer un paiement</h5>
@@ -208,15 +212,7 @@ function Paiements() {
 
               <div className="col-md-4">
                 <label className="form-label">Montant (DH)</label>
-                <input 
-                  type="number" 
-                  step="0.01" 
-                  name="montant" 
-                  className="form-control" 
-                  value={formData.montant} 
-                  onChange={handleChange} 
-                  required 
-                />
+                <input type="number" step="0.01" name="montant" className="form-control" value={formData.montant} onChange={handleChange} required />
               </div>
 
               <div className="col-md-4">
@@ -234,7 +230,6 @@ function Paiements() {
                 </select>
               </div>
 
-              {/* Statut - موجود وواضح */}
               <div className="col-md-6">
                 <label className="form-label">Statut</label>
                 <select name="statut" className="form-select" value={formData.statut} onChange={handleChange}>
@@ -293,3 +288,4 @@ function Paiements() {
 }
 
 export default Paiements;
+

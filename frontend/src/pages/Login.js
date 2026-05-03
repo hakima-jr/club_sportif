@@ -22,14 +22,21 @@ function Login() {
       });
 
       if (res.data.success && res.data.token) {
+        // حفظ التوكن
         localStorage.setItem('token', res.data.token);
-        console.log("✅ Login successful");
+
+        // حفظ معلومات المستخدم (مهم للـ Header)
+        if (res.data.user) {
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+        }
+
+        console.log("✅ Login successful - Redirecting to Home");
 
         // توجيه قوي
         window.location.href = '/';
       } 
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err);
       setError(err.response?.data?.message || 'Email ou mot de passe incorrect');
     } finally {
       setLoading(false);
@@ -42,7 +49,7 @@ function Login() {
         <div className="col-md-5">
           <div className="card shadow-lg">
             <div className="card-body p-5">
-              <h2 className="text-center mb-4 text-primary">نادي رياضي</h2>
+              <h2 className="text-center mb-4 text-primary">Club Sportif </h2>
               <h4 className="text-center mb-4">Connexion</h4>
 
               {error && <div className="alert alert-danger">{error}</div>}
@@ -81,7 +88,7 @@ function Login() {
                 </button>
               </form>
 
-              {/* زر Créer un compte - اللي بغيتي */}
+              {/* زر Créer un compte */}
               <div className="text-center">
                 <p className="mb-2 text-muted">Vous n'avez pas de compte ?</p>
                 <Link to="/register" className="btn btn-outline-success px-4">
