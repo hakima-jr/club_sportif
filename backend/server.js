@@ -480,18 +480,17 @@ app.post('/api/login', async (req, res) => {
 
 // ====================== REGISTER - Créer un nouveau compte ======================
 app.post('/api/register', async (req, res) => {
-  const { nom, prenom, email, password, role } = req.body;
+  const { nom, prenom, email, password, role, telephone, id_membre } = req.body;
 
-  // Validation
   if (!nom || !prenom || !email || !password || !role) {
     return res.status(400).json({ 
       success: false, 
-      message: "Tous les champs sont obligatoires" 
+      message: "Tous les champs obligatoires sont requis" 
     });
   }
 
   try {
-    // التحقق إذا كان الإيميل موجود مسبقاً
+    // التحقق من وجود الإيميل
     const [existing] = await db.query(
       'SELECT id_utilisateur FROM Utilisateur WHERE email = ?', 
       [email]
@@ -504,13 +503,15 @@ app.post('/api/register', async (req, res) => {
       });
     }
 
-    // إنشاء الحساب الجديد
+    // إنشاء الحساب مع ربط بالعضو إذا كان موجود
     const [result] = await db.query(
-      'INSERT INTO Utilisateur (nom, prenom, email, password, role) VALUES (?, ?, ?, ?, ?)',
-      [nom, prenom, email, password, role]
+      `INSERT INTO Utilisateur 
+       (nom, prenom, email, password, role, telephone, id_membre) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [nom, prenom, email, password, role, telephone || null, id_membre || null]
     );
 
-    console.log(`✅ Nouveau compte créé: ${email} - Role: ${role}`);
+    console.log(`✅ Compte créé: ${email} - Role: ${role} ${id_membre ? `(lié à membre ${id_membre})` : ''}`);
 
     res.status(201).json({
       success: true,

@@ -12,26 +12,85 @@ import Paiements from './pages/Paiements';
 import Abonnements from './pages/Abonnements';
 import Rapports from './pages/Rapports';
 import Login from './pages/Login';
-import Register from './pages/Register';   // ← أضفنا هذا
+import Register from './pages/Register';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
-  const token = localStorage.getItem('token');
-
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={token ? <Navigate to="/" replace /> : <Login />} />
-        
-        <Route path="/register" element={token ? <Navigate to="/" replace /> : <Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={token ? <><Header /><Home /></> : <Navigate to="/login" replace />} />
+        <Route 
+          path="/" 
+          element={
+            <PrivateRoute>
+              <Header />
+              <Home />
+            </PrivateRoute>
+          } 
+        />
 
-        <Route path="/members" element={token ? <><Header /><Members /></> : <Navigate to="/login" replace />} />
-        <Route path="/abonnements" element={token ? <><Header /><Abonnements /></> : <Navigate to="/login" replace />} />
-        <Route path="/seances" element={token ? <><Header /><Seances /></> : <Navigate to="/login" replace />} />
-        <Route path="/presence" element={token ? <><Header /><Presence /></> : <Navigate to="/login" replace />} />
-        <Route path="/paiements" element={token ? <><Header /><Paiements /></> : <Navigate to="/login" replace />} />
-        <Route path="/rapports" element={token ? <><Header /><Rapports /></> : <Navigate to="/login" replace />} />
+        <Route 
+          path="/members" 
+          element={
+            <PrivateRoute>
+              <Header />
+              <Members />
+            </PrivateRoute>
+          } 
+        />
+
+        <Route 
+          path="/abonnements" 
+          element={
+            <PrivateRoute>
+              <Header />
+              <Abonnements />
+            </PrivateRoute>
+          } 
+        />
+
+        <Route 
+          path="/seances" 
+          element={
+            <PrivateRoute allowedRoles={['admin', 'reception', 'coach']}>
+              <Header />
+              <Seances />
+            </PrivateRoute>
+          } 
+        />
+
+        <Route 
+          path="/presence" 
+          element={
+            <PrivateRoute allowedRoles={['admin', 'reception', 'coach']}>
+              <Header />
+              <Presence />
+            </PrivateRoute>
+          } 
+        />
+
+        <Route 
+          path="/paiements" 
+          element={
+            <PrivateRoute allowedRoles={['admin', 'reception']}>
+              <Header />
+              <Paiements />
+            </PrivateRoute>
+          } 
+        />
+
+        <Route 
+  path="/rapports" 
+  element={
+    <PrivateRoute allowedRoles={['admin']}>
+      <Header />
+      <Rapports />
+    </PrivateRoute>
+  } 
+/>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
