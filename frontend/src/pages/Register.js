@@ -71,9 +71,18 @@ function Register() {
     setSuccess('');
 
     try {
+<<<<<<< Updated upstream
       const res = await axios.post('http://localhost:4000/api/register', formData);
       setSuccess('Compte créé avec succès ! Redirection...');
       setTimeout(() => navigate('/login'), 2000);
+=======
+      const res = await axios.post('http://localhost:5000/api/register', formData);
+      
+      setSuccess('Compte créé avec succès ! Vous pouvez vous connecter maintenant.');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+>>>>>>> Stashed changes
     } catch (err) {
       setError(err.response?.data?.message || 'Erreur lors de la création');
     } finally {

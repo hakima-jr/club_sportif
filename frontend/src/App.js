@@ -1,12 +1,12 @@
 // src/App.jsx
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 import Header from './components/Header';
 import Home from './pages/Home';
 import Members from './pages/Members';
-import Seances from './pages/Seances';
+import Seances from './pages/Seance';
 import Presence from './pages/Presence';
 import Paiements from './pages/Paiements';
 import Abonnements from './pages/Abonnements';

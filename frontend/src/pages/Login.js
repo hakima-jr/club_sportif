@@ -16,7 +16,7 @@ function Login() {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:4000/api/login', {
+      const res = await axios.post('http://localhost:5000/api/login', {
         email,
         password
       });
@@ -49,7 +49,11 @@ function Login() {
         <div className="col-md-5">
           <div className="card shadow-lg">
             <div className="card-body p-5">
+<<<<<<< Updated upstream
               <h2 className="text-center mb-4 text-primary">Club Sportif </h2>
+=======
+              <h2 className="text-center mb-4 text-primary">Club sportif</h2>
+>>>>>>> Stashed changes
               <h4 className="text-center mb-4">Connexion</h4>
 
               {error && <div className="alert alert-danger">{error}</div>}
