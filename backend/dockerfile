@@ -3,6 +3,4 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 5000
-# استعملي هاد السطر بالضبط باش يتفادى مشاكل المسارات
 CMD ["npm", "start"]

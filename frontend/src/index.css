@@ -1,6 +1,215 @@
-body {
+/* src/index.css */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #1a1f2e; /* Lawn l-projet l-asli */
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background-color: #0f1117;
+  color: #cbd5e1;
+  min-height: 100vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Scrollbar dark */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161b27;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3448;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3d4a65;
+}
+
+/* Override Bootstrap inputs globally */
+.form-control,
+.form-select {
+  background-color: #232938 !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #2d3448 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: #2a3040 !important;
+  color: #e2e8f0 !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: #64748b !important;
+}
+
+/* Override Bootstrap cards */
+.card {
+  background-color: #1a1f2e !important;
+  border: 1px solid #2d3448 !important;
+  color: #e2e8f0 !important;
+}
+
+.card-header {
+  border-bottom: 1px solid #2d3448 !important;
+}
+
+.card-body {
+  background-color: #1a1f2e !important;
+}
+
+/* Override Bootstrap tables */
+.table {
+  color: #cbd5e1 !important;
+  --bs-table-striped-bg: #1e2537;
+  --bs-table-hover-bg: #232938;
+}
+
+.table thead th {
+  color: #64748b !important;
+  border-color: #2d3448 !important;
+  background: #232938;
+}
+
+.table td,
+.table th {
+  border-color: #1e2435 !important;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+  background-color: #1e2537 !important;
+  color: #cbd5e1 !important;
+}
+
+/* Override Bootstrap alerts */
+.alert-success {
+  background-color: #14532d !important;
+  color: #4ade80 !important;
+  border-color: #16a34a !important;
+}
+
+.alert-danger {
+  background-color: #3b1f1f !important;
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+.alert-info {
+  background-color: #1e3a5f !important;
+  color: #60a5fa !important;
+  border-color: #2563eb !important;
+}
+
+.alert-warning {
+  background-color: #431407 !important;
+  color: #fb923c !important;
+  border-color: #ea580c !important;
+}
+
+/* Bootstrap badges */
+.badge.bg-success {
+  background-color: #14532d !important;
+  color: #4ade80 !important;
+}
+
+.badge.bg-danger {
+  background-color: #3b1f1f !important;
+  color: #f87171 !important;
+}
+
+.badge.bg-warning {
+  background-color: #431407 !important;
+  color: #fb923c !important;
+}
+
+.badge.bg-primary {
+  background-color: #1e3a5f !important;
+  color: #60a5fa !important;
+}
+
+/* Bootstrap buttons */
+.btn-success {
+  background-color: #16a34a !important;
+  border-color: #16a34a !important;
+}
+
+.btn-outline-success {
+  border-color: #16a34a !important;
+  color: #4ade80 !important;
+}
+
+.btn-outline-success:hover {
+  background-color: #14532d !important;
+}
+
+.btn-outline-primary {
+  border-color: #2563eb !important;
+  color: #60a5fa !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #1e3a5f !important;
+}
+
+.btn-outline-danger {
+  border-color: #dc2626 !important;
+  color: #f87171 !important;
+}
+
+/* Dropdown dark */
+.dropdown-menu-dark {
+  background-color: #1a1f2e !important;
+  border: 1px solid #2d3448 !important;
+}
+
+.dropdown-item {
+  color: #cbd5e1 !important;
+}
+
+.dropdown-item:hover {
+  background-color: #232938 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Container */
+.container,
+.container-fluid {
+  color: #cbd5e1;
+}
+
+/* Text helpers */
+.text-muted {
+  color: #64748b !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #e2e8f0;
 }
